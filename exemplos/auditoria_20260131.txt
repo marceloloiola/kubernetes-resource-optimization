@@ -1,0 +1,213 @@
+# Auditoria de Recursos - Cluster Kubernetes
+# Data: 31 de Janeiro de 2026
+# Cluster: RKE2 Production (3 nós)
+# Gerado por: check_slack_percent.sh
+
+================================================================================
+RESUMO EXECUTIVO
+================================================================================
+
+Cluster: RKE2 Production
+Nodes: 3 (sr-atilxapp0137, sr-atilxapp0138, sr-atilxapp0139)
+CPU Total Disponível: 24 cores (8 por node)
+CPU Total Solicitada: 13.535m (~13.5 cores)
+CPU Total Utilizada: 1.535m (~1.5 cores)
+
+Eficiência Global: 11.4%
+Desperdício Global: 88.6%
+Status: 🔴 CRÍTICO
+
+================================================================================
+DETALHAMENTO POR NAMESPACE
+================================================================================
+
+NAMESPACE                           REQUESTED       USED            SLACK (m)       WASTE %
+---------------------------------------------------------------------------------------------------
+kube-system                         3925m           625m            3300m           84.1%
+istio-system                        1410m           21m             1389m           98.5%
+longhorn-system                     1200m           211m            989m            82.4%
+esusaf-hml                          580m            114m            466m            80.3%
+sers-fiscal-hml                     300m            6m              294m            98.0%
+painel-frotas-hml                   250m            6m              244m            97.6%
+sers-checklist-hml                  230m            6m              224m            97.4%
+nanf-hml                            230m            6m              224m            97.4%
+nanf-analise-hml                    230m            6m              224m            97.4%
+credor-hml                          230m            6m              224m            97.4%
+painel-mobiliario-dev               120m            3m              117m            97.5%
+painel-emendas-federais-dev         120m            3m              117m            97.5%
+painel-emendas-estaduais-dev        120m            3m              117m            97.5%
+cattle-monitoring-system            950m            111m            839m            88.3%
+velero                              560m            6m              554m            98.9%
+sers-fiscal-dev                     270m            6m              264m            97.8%
+painel-frotas-dev                   120m            3m              117m            97.5%
+nanf-dev                            230m            6m              224m            97.4%
+nanf-analise-dev                    230m            6m              224m            97.4%
+credor-dev                          230m            6m              224m            97.4%
+sers-checklist-dev                  330m            9m              321m            97.3%
+istio-ingress                       100m            4m              96m             96.0%
+analytics                           850m            50m             800m            94.1%
+esusaf-dev                          330m            106m            224m            67.9%
+painel-mobiliario-hml               250m            6m              244m            97.6%
+painel-emendas-federais-hml         125m            3m              122m            97.6%
+painel-emendas-estaduais-hml        125m            3m              122m            97.6%
+
+================================================================================
+ANÁLISE POR CRITICIDADE
+================================================================================
+
+🔴 CRÍTICO (Desperdício > 95%):
+---------------------------------------------------------------------------------------------------
+velero                              560m            6m              554m            98.9%
+istio-system                        1410m           21m             1389m           98.5%
+sers-fiscal-hml                     300m            6m              294m            98.0%
+sers-fiscal-dev                     270m            6m              264m            97.8%
+painel-frotas-hml                   250m            6m              244m            97.6%
+painel-mobiliario-hml               250m            6m              244m            97.6%
+painel-emendas-federais-hml         125m            3m              122m            97.6%
+painel-emendas-estaduais-hml        125m            3m              122m            97.6%
+painel-mobiliario-dev               120m            3m              117m            97.5%
+painel-emendas-federais-dev         120m            3m              117m            97.5%
+painel-emendas-estaduais-dev        120m            3m              117m            97.5%
+sers-checklist-hml                  230m            6m              224m            97.4%
+nanf-hml                            230m            6m              224m            97.4%
+nanf-analise-hml                    230m            6m              224m            97.4%
+credor-hml                          230m            6m              224m            97.4%
+nanf-dev                            230m            6m              224m            97.4%
+nanf-analise-dev                    230m            6m              224m            97.4%
+credor-dev                          230m            6m              224m            97.4%
+sers-checklist-dev                  330m            9m              321m            97.3%
+istio-ingress                       100m            4m              96m             96.0%
+
+SUBTOTAL CRÍTICO: 6.930m solicitados | 264m usados | 6.666m desperdiçados
+
+🟡 ALTO (Desperdício 80-95%):
+---------------------------------------------------------------------------------------------------
+analytics                           850m            50m             800m            94.1%
+cattle-monitoring-system            950m            111m            839m            88.3%
+kube-system                         3925m           625m            3300m           84.1%
+longhorn-system                     1200m           211m            989m            82.4%
+esusaf-hml                          580m            114m            466m            80.3%
+
+SUBTOTAL ALTO: 7.505m solicitados | 1.111m usados | 6.394m desperdiçados
+
+🟢 MODERADO (Desperdício < 80%):
+---------------------------------------------------------------------------------------------------
+esusaf-dev                          330m            106m            224m            67.9%
+
+SUBTOTAL MODERADO: 330m solicitados | 106m usados | 224m desperdiçados
+
+================================================================================
+TOP 10 DESPERDIÇADORES (SLACK ABSOLUTO)
+================================================================================
+
+1. kube-system                      3925m → 625m    (3300m desperdiçados)
+2. istio-system                     1410m → 21m     (1389m desperdiçados)
+3. longhorn-system                  1200m → 211m    (989m desperdiçados)
+4. cattle-monitoring-system         950m  → 111m    (839m desperdiçados)
+5. analytics                        850m  → 50m     (800m desperdiçados)
+6. velero                           560m  → 6m      (554m desperdiçados)
+7. esusaf-hml                       580m  → 114m    (466m desperdiçados)
+8. sers-checklist-dev               330m  → 9m      (321m desperdiçados)
+9. sers-fiscal-hml                  300m  → 6m      (294m desperdiçados)
+10. sers-fiscal-dev                 270m  → 6m      (264m desperdiçados)
+
+TOTAL TOP 10: 10.375m solicitados | 1.153m usados | 9.222m desperdiçados (89% do total)
+
+================================================================================
+POTENCIAL DE ECONOMIA
+================================================================================
+
+Cenário CONSERVADOR (reduzir desperdício para 50%):
+  Economia: ~6.000m (~6 CPUs)
+  Novos requests: ~7.500m
+  Nova eficiência: ~20%
+
+Cenário MODERADO (reduzir desperdício para 30%):
+  Economia: ~8.000m (~8 CPUs)
+  Novos requests: ~5.500m
+  Nova eficiência: ~28%
+
+Cenário AGRESSIVO (reduzir desperdício para 15%):
+  Economia: ~9.800m (~10 CPUs)
+  Novos requests: ~3.700m
+  Nova eficiência: ~42%
+
+================================================================================
+RECOMENDAÇÕES IMEDIATAS
+================================================================================
+
+PRIORIDADE 1 (Esta Semana):
+✓ velero (98.9% desperdício) - CONCLUÍDO ✅
+  └─ Economia: 515m
+
+□ istio-system (98.5% desperdício)
+  └─ Potencial: ~1.350m
+
+□ Painéis HML/DEV (>97% desperdício)
+  └─ Potencial: ~1.800m combinados
+
+PRIORIDADE 2 (Próximas 2 Semanas):
+□ cattle-monitoring-system (88.3% desperdício)
+  └─ Potencial: ~750m
+
+□ analytics (94.1% desperdício)
+  └─ Potencial: ~750m
+
+□ longhorn-system (82.4% desperdício)
+  └─ Potencial: ~900m
+
+PRIORIDADE 3 (Próximo Mês):
+□ kube-system (84.1% desperdício)
+  └─ Potencial: ~2.500m (CUIDADO: componentes críticos)
+
+================================================================================
+OBSERVAÇÕES TÉCNICAS
+================================================================================
+
+1. Sidecars Istio:
+   - Detectado uso excessivo de proxies (100m default)
+   - Recomendação: Reduzir para 10-20m em ambientes não-prod
+
+2. Aplicações de Painéis:
+   - Padrão comum: 120-250m solicitados, 3-6m usados
+   - Recomendação: Padronizar em 10-15m para dev/hml
+
+3. Longhorn:
+   - Instance managers com 400m cada
+   - Uso real: ~30-40m
+   - Recomendação: Reduzir para 50m
+
+4. Kube-system:
+   - Componentes críticos, abordar com cautela
+   - Focar em: coredns, ingress-controller
+   - Evitar: apiserver, etcd, scheduler
+
+5. Ambientes Dev vs Hml:
+   - Desperdício similar em ambos
+   - Oportunidade de padronização
+
+================================================================================
+MÉTRICAS DE PROGRESSO
+================================================================================
+
+Status Atual (31/01/2026):
+├─ Namespaces Auditados: 27
+├─ Namespaces Otimizados: 1 (velero) ✅
+├─ Economia Realizada: 515m (3.8% do desperdício total)
+├─ Economia Potencial Restante: ~12.500m
+└─ Próximo Alvo: istio-system
+
+Meta para Q1 2026:
+├─ Otimizar top 10 namespaces
+├─ Atingir eficiência de 40%
+├─ Liberar ~8 CPUs para novas cargas
+└─ Estabelecer processo contínuo de auditoria
+
+================================================================================
+FIM DO RELATÓRIO
+================================================================================
+
+Gerado por: check_slack_percent.sh v2.0
+Autor: Marcelo Loiola
+Data: 2026-01-31 14:30:00 BRT
+Cluster: RKE2 Production (3 nós)

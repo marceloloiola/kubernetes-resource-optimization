@@ -1,0 +1,47 @@
+# Logs
+*.log
+*.txt
+!exemplos/*.txt
+!exemplos/auditoria_*.txt
+
+# Temporários
+*.tmp
+*.bak
+*~
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Outputs temporários
+/outputs/
+/temp/
+
+# Credenciais e configs sensíveis
+*.kubeconfig
+*-secret.yaml
+credentials.yml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+ENV/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Kubernetes
+*.secret
