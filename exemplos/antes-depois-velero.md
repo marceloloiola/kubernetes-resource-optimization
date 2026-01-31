@@ -1,6 +1,6 @@
 # Comparativo Antes/Depois: Otimização do Velero
 
-## 📊 Resumo Executivo
+## Resumo Executivo
 
 **Namespace:** velero  
 **Data da Otimização:** 31 de Janeiro de 2026  
@@ -9,7 +9,7 @@
 
 ---
 
-## 🔍 Antes da Otimização
+## Antes da Otimização
 
 ### Configuração
 
@@ -62,7 +62,7 @@ velero-b655f5996-jfsfv   5m           245Mi
 
 ---
 
-## ✅ Depois da Otimização
+## Depois da Otimização
 
 ### Nova Configuração
 
@@ -115,7 +115,7 @@ velero-8766b5d9d-2rvcn   6m           246Mi
 
 ---
 
-## 📊 Comparativo Lado a Lado
+## Comparativo Lado a Lado
 
 ### CPU Requests
 
@@ -152,7 +152,7 @@ velero-8766b5d9d-2rvcn   6m           246Mi
 
 ---
 
-## 🎯 Impacto no Cluster
+## Impacto no Cluster
 
 ### Recursos Liberados
 
@@ -190,7 +190,7 @@ Total Economizado: 515m
 
 ---
 
-## ✅ Validações Realizadas
+## Validações Realizadas
 
 ### 1. Pods Recriados com Sucesso
 
@@ -259,7 +259,7 @@ velero: 6m
 
 ---
 
-## 📈 Métricas de Sucesso
+## Métricas de Sucesso
 
 | KPI | Meta | Real | Status |
 |-----|------|------|--------|
@@ -271,7 +271,7 @@ velero: 6m
 
 ---
 
-## 💡 Lições Aprendidas
+## Lições Aprendidas
 
 ### O que funcionou
 
@@ -296,7 +296,7 @@ Padrão similar encontrado em:
 
 ---
 
-## 🔄 Próximos Passos
+## Próximos Passos
 
 **Imediato:**
 - [x] Validar velero por 7 dias ✅
@@ -315,7 +315,7 @@ Padrão similar encontrado em:
 
 ---
 
-## 📊 Gráficos (Conceituais)
+## Gráficos (Conceituais)
 
 ### Evolução do Desperdício
 
@@ -346,7 +346,7 @@ Depois: [███] 45m
 
 ---
 
-## 🎯 Conclusão
+## Conclusão
 
 A otimização do namespace Velero foi um **sucesso completo**:
 

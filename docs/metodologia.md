@@ -1,6 +1,6 @@
 # Metodologia SRE: Resource Optimization
 
-## 🎯 Visão Geral
+## Visão Geral
 
 Este documento descreve a metodologia Site Reliability Engineering (SRE) aplicada para otimização de recursos em clusters Kubernetes, com foco em **Right-Sizing** de CPU e Memória.
 
@@ -8,7 +8,7 @@ A abordagem é **data-driven**, **iterativa** e **orientada a riscos**, seguindo
 
 ---
 
-## 📊 Princípios Fundamentais
+## Princípios Fundamentais
 
 ### 1. Observabilidade Primeiro
 
@@ -50,7 +50,7 @@ Request = Uso_de_Pico × Margem_de_Segurança
 
 ---
 
-## 🔄 O Ciclo de Otimização
+## O Ciclo de Otimização
 
 ### Fase 1: DISCOVERY (Descoberta)
 
@@ -308,7 +308,7 @@ annotations:
 
 ---
 
-## 🛠️ Ferramentas e Automação
+## Ferramentas e Automação
 
 ### Scripts Essenciais
 
@@ -343,7 +343,7 @@ audit-resources:
 
 ---
 
-## 📈 KPIs e Métricas de Sucesso
+## KPIs e Métricas de Sucesso
 
 ### Métricas de Eficiência
 
@@ -372,7 +372,7 @@ Perigoso: >90% (pode indicar under-provisioning)
 
 ---
 
-## 🚨 Gerenciamento de Riscos
+## Gerenciamento de Riscos
 
 ### Classificação de Risco
 
@@ -440,7 +440,7 @@ kubectl rollout undo deployment/<nome> -n <namespace>
 
 ---
 
-## 🎓 Checklist do SRE
+## Checklist do SRE
 
 Antes de iniciar otimização:
 
@@ -475,7 +475,7 @@ Após otimização:
 
 ---
 
-## 📚 Referências
+## Referências
 
 - [Google SRE Book](https://sre.google/sre-book/table-of-contents/)
 - [Kubernetes Best Practices](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
@@ -484,7 +484,7 @@ Após otimização:
 
 ---
 
-## 🤝 Contribuindo
+## Contribuindo
 
 Esta metodologia é viva e deve evoluir. Contribua com:
 

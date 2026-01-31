@@ -1,4 +1,4 @@
-# Playbook: Otimização de Recursos em Kubernetes (Right-Sizing)
+# Documentação: Otimização de Recursos em Kubernetes (Right-Sizing)
 
 Este documento descreve o processo de identificação, análise e correção de alocação excessiva de recursos (CPU/Memória) em clusters Kubernetes. O objetivo é reduzir o **Slack** (diferença entre o que foi reservado e o que é realmente usado).
 
@@ -6,7 +6,7 @@ Este documento descreve o processo de identificação, análise e correção de 
 
 ---
 
-## 📋 Índice
+## Índice
 
 1. [Diagnóstico: Identificando o Desperdício](#1-diagnóstico-identificando-o-desperdício-global)
 2. [Investigação: Encontrando o Pod "Gordo"](#2-investigação-encontrando-o-pod-gordo)
@@ -77,7 +77,7 @@ cattle-monitoring-system            950m            111m            839m        
 
 ---
 
-## 2. Investigação: Encontrando o Pod "Gordo"
+## 2. Investigação: Encontrando o pod "Inchado"
 
 Após identificar o namespace problemático, precisamos descobrir qual carga de trabalho (Workload) está superdimensionada.
 
@@ -187,7 +187,7 @@ kubectl patch deployment <NOME_DO_DEPLOY> -n <NAMESPACE> --type='merge' \
   -p '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/proxyCPU": "10m", "sidecar.istio.io/proxyMemory": "50Mi"}}}}}'
 ```
 
-### C. Script Automatizado de Correção
+### C. Script de correção automatizada
 
 Para facilitar, crie scripts específicos por namespace. Exemplo:
 
@@ -259,9 +259,9 @@ DEPOIS: velero    45m     6m    39m     86.7%
 
 ---
 
-## 5. Análise de Desperdício por Namespace
+## 5. Análise de desperdício por Namespace
 
-### Identificando Namespaces com Maior Desperdício
+### Identificando Namespaces com maior desperdício
 
 Execute o script de auditoria e analise os resultados focando em:
 
@@ -327,7 +327,7 @@ Gráficos mostraram:
 #!/bin/bash
 # Otimização Velero
 
-echo "🚀 Aplicando otimização no namespace velero..."
+echo "Aplicando otimização no namespace velero..."
 
 # Corrigir DaemonSet node-agent (20m → 5m)
 kubectl patch daemonset node-agent -n velero --type='json' \
@@ -337,7 +337,7 @@ kubectl patch daemonset node-agent -n velero --type='json' \
 kubectl patch deployment velero -n velero --type='json' \
   -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/resources/requests/cpu", "value": "30m"}]'
 
-echo "✅ Correções aplicadas!"
+echo "Correções aplicadas!"
 ```
 
 **Execução:**
@@ -419,7 +419,7 @@ Request Ideal = (Uso de Pico × 1.3) + Buffer de Burst
 | **Aplicações críticas** | Uso pico × 1.5 | Requests × 2 |
 | **Jobs/CronJobs** | Uso histórico | Requests × 2 |
 
-### Ambientes Dev/Hml vs Produção
+### Ambientes dev/hml X prd
 
 **Desenvolvimento/Homologação:**
 - Requests mais baixos (recursos limitados)

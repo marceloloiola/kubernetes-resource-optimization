@@ -2,7 +2,7 @@
 
 Esta pasta contém evidências visuais da análise de métricas do Prometheus/Grafana que foram fundamentais para definir os novos valores de CPU requests.
 
-## 📊 Screenshots Incluídos
+## Screenshots Incluídos
 
 ### 1. node-agent Pods (DaemonSet)
 
@@ -28,7 +28,7 @@ Esta pasta contém evidências visuais da análise de métricas do Prometheus/Gr
 - Picos correlacionados com execução de backups
 - Memória estável: ~216-256 MiB
 
-## 🔍 Como Usar
+## Como Usar
 
 ### Adicionar Screenshots
 
@@ -71,7 +71,7 @@ container_memory_working_set_bytes{namespace="velero"} /
 on(pod) group_left kube_pod_container_resource_requests{namespace="velero", resource="memory"}
 ```
 
-## 📝 Template de Análise
+## Template de Análise
 
 Para cada screenshot, documente:
 
@@ -93,7 +93,7 @@ Request de 5m oferece margem de 5-10x, adequado para DaemonSet crítico.
 **Request recomendado:** 5m (anteriormente 20m)
 ```
 
-## 🎯 Valor das Evidências
+## Valor das Evidências
 
 Esses screenshots são essenciais para:
 
@@ -103,7 +103,7 @@ Esses screenshots são essenciais para:
 4. **Compartilhar conhecimento** com o time
 5. **Auditar decisões** no futuro
 
-## 📸 Como Capturar
+## Como Capturar
 
 ### No Grafana:
 
@@ -123,7 +123,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
   -o screenshot.png
 ```
 
-## 🔒 Segurança
+## Segurança
 
 **Atenção:**
 - Remova informações sensíveis antes de compartilhar
@@ -131,20 +131,20 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 - Credenciais ou tokens
 - Dados de clientes
 
-## 📁 Estrutura de Arquivos
+## Estrutura de Arquivos
 
 ```
 grafana/
 ├── README.md                          # Este arquivo
-├── node-agent-cpu-7days.png          # (adicione)
-├── node-agent-memory-7days.png       # (adicione)
-├── velero-cpu-7days.png              # (adicione)
-├── velero-memory-7days.png           # (adicione)
+├── node-agent-cpu-7days.png          # (ainda vou adicionar)
+├── node-agent-memory-7days.png       # (ainda vou adicionar)
+├── velero-cpu-7days.png              # (ainda vou adicionar)
+├── velero-memory-7days.png           # (ainda vou adicionar)
 ├── cluster-overview.png              # (opcional)
 └── dashboard-config.json             # (opcional)
 ```
 
-## 🤝 Contribuindo
+## Contribuindo
 
 Ao adicionar screenshots:
 

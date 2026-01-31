@@ -1,6 +1,6 @@
 # Case Detalhado: Otimização do Namespace Velero
 
-## 📊 Resumo Executivo
+## Resumo Executivo
 
 **Namespace:** velero  
 **Tipo:** Backup e Disaster Recovery  
@@ -9,7 +9,7 @@
 
 ---
 
-## 🔍 Contexto
+## Contexto
 
 O Velero é uma ferramenta de backup e disaster recovery para Kubernetes. No cluster auditado, ele possuía:
 
@@ -32,7 +32,7 @@ velero      560m        6m      554m     98.9% 🔴
 
 ---
 
-## 🔎 Diagnóstico
+## Diagnóstico
 
 ### 1. Coleta de Dados Inicial
 
@@ -90,9 +90,9 @@ Analisando 7 dias de histórico no Grafana:
 
 ---
 
-## 🎯 Estratégia de Otimização
+## Estratégia de Otimização
 
-### Cálculo dos Novos Valores
+### Cálculo dos novos valores
 
 **node-agent:**
 ```
@@ -108,14 +108,14 @@ Margem de segurança: 2x
 Request recomendado: 15m × 2 = 30m ✅
 ```
 
-### Por que Estas Margens?
+### Por que estas margens?
 
-- **node-agent (7x)**: Margem alta pois são DaemonSets críticos e uso é extremamente previsível
+- **node-agent (7x)**: Margem alta pois são DaemonSets críticos e o uso é extremamente previsível
 - **velero (2x)**: Margem menor mas suficiente, considerando que picos são raros e curtos
 
 ---
 
-## 🛠️ Implementação
+## Implementação
 
 ### Script de Correção Criado
 
@@ -123,7 +123,7 @@ Request recomendado: 15m × 2 = 30m ✅
 #!/bin/bash
 # correcao_velero.sh
 
-echo "🚀 Aplicando otimização no namespace velero..."
+echo " Aplicando otimização no namespace velero..."
 
 # 1. Corrigir DaemonSet node-agent (20m → 5m)
 kubectl patch daemonset node-agent -n velero --type='json' \
@@ -141,7 +141,7 @@ echo "Aguardando rollout..."
 sleep 10
 
 # 3. Validar novos valores
-echo "📊 Novos valores configurados:"
+echo " Novos valores configurados:"
 kubectl get pods -n velero -o custom-columns='NAME:.metadata.name,CPU_REQ:.spec.containers[*].resources.requests.cpu'
 ```
 
@@ -155,7 +155,7 @@ chmod +x correcao_velero.sh
 ### Output da Execução
 
 ```
-🚀 Aplicando otimização no namespace velero...
+Aplicando otimização no namespace velero...
 daemonset.apps/node-agent patched
 ✓ DaemonSet node-agent atualizado
 deployment.apps/velero patched
@@ -163,7 +163,7 @@ deployment.apps/velero patched
 
 Aguardando rollout...
 
-📊 Novos valores configurados:
+Novos valores configurados:
 NAME                     CPU_REQ
 node-agent-4xhcx         5m
 node-agent-7lq5p         5m
@@ -173,7 +173,7 @@ velero-8766b5d9d-2rvcn   30m
 
 ---
 
-## ✅ Validação
+## Validação
 
 ### 1. Verificação de Pods
 
@@ -241,9 +241,9 @@ kubectl get events -n velero --sort-by='.lastTimestamp' | tail -20
 
 ---
 
-## 📊 Resultados
+## Resultados
 
-### Antes vs Depois
+### Antes X Depois
 
 | Métrica | Antes | Depois | Melhoria |
 |---------|-------|--------|----------|
@@ -278,9 +278,9 @@ Total liberado: 515m
 
 ---
 
-## 💡 Lições Aprendidas
+## O quê aprendemos:
 
-### O que Funcionou Bem
+### O que funcionou bem:
 
 1. **Análise de Histórico:** 7 dias de métricas deram confiança para definir valores
 2. **Abordagem Gradual:** Começar pelo namespace menos crítico reduziu riscos
@@ -302,7 +302,7 @@ Namespaces similares identificados:
 
 ---
 
-## 🔄 Processo de Reversão
+## IMPORTANTE: Processo de Reversão (rollback)
 
 Caso necessário reverter:
 
@@ -321,11 +321,11 @@ kubectl patch deployment velero -n velero --type='json' \
   -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/resources/requests/cpu", "value": "500m"}]'
 ```
 
-**Observação:** Reversão não foi necessária. Mudanças foram bem-sucedidas.
+**Observação:** A reversão não foi necessária. Todas as mudanças foram bem-sucedidas.
 
 ---
 
-## 📚 Referências
+## Referências
 
 - [Velero Documentation](https://velero.io/docs/)
 - [Kubernetes Resource Management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
@@ -333,7 +333,7 @@ kubectl patch deployment velero -n velero --type='json' \
 
 ---
 
-## 🎓 Competências Demonstradas
+## Competências Demonstradas
 
 - ✅ Análise de métricas e observabilidade
 - ✅ Kubernetes resource management avançado
