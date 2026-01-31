@@ -74,7 +74,7 @@ echo ""
 # Se receber argumento "apply", executa as correções
 if [ "$1" == "apply" ]; then
     echo ""
-    echo "🚀 APLICANDO CORREÇÕES..."
+    echo "APLICANDO CORREÇÕES..."
     echo ""
     
     if [ -n "$DAEMONSET" ]; then
