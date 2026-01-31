@@ -1,7 +1,6 @@
 #!/bin/bash
 # diagnostico_metrics_rke2.sh
 # Diagnóstico do metrics-server no RKE2
-# Versão atualizada e testada
 
 echo "=========================================="
 echo "DIAGNÓSTICO: Metrics Server (RKE2)"

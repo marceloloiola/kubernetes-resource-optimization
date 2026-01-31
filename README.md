@@ -342,7 +342,7 @@ Este projeto é open-source! Se você quiser ajudar:
 **Marcelo Loiola**  
 Software Architect | DevOps Engineer | Cloud Engineer 
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-marcelo-loiola-blue)](https://linkedin.com/in/marcelo-loiola)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-marceloloiola-blue)](https://linkedin.com/in/marcelo-loiola)
 [![GitHub](https://img.shields.io/badge/GitHub-marceloloiola-black)](https://github.com/marceloloiola)
 
 ---

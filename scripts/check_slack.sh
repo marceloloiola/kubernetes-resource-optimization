@@ -1,8 +1,7 @@
 #!/bin/bash
 # check_slack.sh
 # Calcula o SLACK: (Total CPU Requested) - (Total CPU Used)
-# Versão atualizada com melhor parsing usando jq
-
+# Requer: kubectl, jq, awk
 printf "%-35s %-15s %-15s %-15s\n" "NAMESPACE" "REQUESTED" "USED" "SLACK (m)"
 echo "---------------------------------------------------------------------------------------------------"
 

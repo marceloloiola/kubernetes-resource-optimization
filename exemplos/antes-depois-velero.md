@@ -255,7 +255,7 @@ node-agent: 1m
 velero: 6m
 ```
 
-✅ **Conclusão:** Uso permanece estável dentro do esperado
+**Conclusão:** Uso permanece estável dentro do esperado
 
 ---
 
