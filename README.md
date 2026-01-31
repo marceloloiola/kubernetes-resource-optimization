@@ -1,27 +1,38 @@
-# 🚀 Case: Otimização de Recursos em Cluster Kubernetes - Redução de 92% no Desperdício
+# Como Reduzi 92% do desperdício no Cluster Kubernetes
 
-## 📊 Contexto
+## O Problema:
 
-Ao realizar uma auditoria de recursos em um cluster Kubernetes RKE2 de produção com 3 nós, identifiquei um **desperdício massivo de recursos**: o cluster estava solicitando **13,5 CPUs** mas utilizando efetivamente apenas **1,5 CPUs** - uma eficiência de apenas **10%**.
+Tudo começou quando um dev chegou até a mim e me perguntou: "Marcelo, nosso cluster AMP (ApplicaApplication Management Platform) tem espaço suficiente para subirmos dois ambientes: develop e homolog?"
 
-Este case documenta o processo completo de diagnóstico, análise e otimização que resultou em **economia significativa de recursos** sem impacto na performance ou disponibilidade das aplicações.
+Essa pergunta me fez refletir muito sobre utilização de recursos. Eu já sabia que tínhamos recursos disponíveis, mas... quanto de recurso exatamente temos? Qual o consumo efetivo de cada aplicação? Decidi então fazer algo que ainda não tinha sido feito antes: auditar de verdade o que estávamos usando versus o que estávamos reservando no cluster.
 
----
+Utilizamos Prometheus, analisei os dados e métricas, rodei alguns scripts que desenvolvi e... descobri um baita de um problema.
 
-## 🎯 Objetivo
+Nosso cluster Kubernetes (RKE2, com 3 nodes) estava solicitando **13,5 CPUs** mas efetivamente utilizando apenas **1,5 CPUs**. A eficiência era de míseros **10%**. Ou seja, estávamos desperdiçando **quase 90% dos recursos**.
 
-Implementar **Right-Sizing** nos recursos do cluster para:
-- ✅ Reduzir desperdício de CPU/Memória
-- ✅ Melhorar eficiência do scheduler
-- ✅ Liberar recursos para novas cargas de trabalho
-- ✅ Reduzir custos de infraestrutura
-- ✅ Manter SLA e performance das aplicações
+Mas então como chegamos nessa realidade? Configurações genéricas copiadas de exemplos, aquele famoso "vamos colocar 500m pra garantir", e ninguém nunca revisou depois. O resultado: Um grande desperdício.
+
+Decidi criar em repositório para documentar todo o processo que segui para diagnosticar, analisar e otimizar o cluster - resultando em **economia significativa** sem causar **nenhum problema** nas aplicações.
 
 ---
 
-## 📈 Resultados Alcançados
+## O quê eu queria Alcançar
 
-### Cluster Global (Antes da Otimização)
+Meu objetivo: otimizar os recursos do cluster sem causar nenhum problema. Isso significava:
+
+- Reduzir o desperdício de CPU e Memória
+- Melhorar a eficiência do scheduler do Kubernetes
+- Liberar recursos para novas aplicações
+- Fazer tudo isso mantendo o SLA e a performance das aplicações
+- Zero downtime
+
+Basicamente, queria usar os recursos de forma inteligente, não apenas simplesmente cortar.
+
+---
+
+## Resultados alcançados
+
+### Situação do Cluster (Antes da Otimização)
 
 | Métrica | Valor |
 |---------|-------|
@@ -30,7 +41,14 @@ Implementar **Right-Sizing** nos recursos do cluster para:
 | **Desperdício Médio** | **88.6%** 🔴 |
 | **Eficiência** | 11.4% |
 
-### Caso Piloto: Namespace Velero
+### Primeiro Caso: Namespace Velero (Como piloto)
+
+Decidi começar pelo Velero (nossa ferramenta de backup) porque:
+1. Não era crítico para o negócio (backups rodavam de madrugada)
+2. Mostrava o maior percentual de desperdício (98.9%)
+3. Se desse algum problema, seria fácil reverter
+
+Os números antes da otimização:
 
 | Métrica | Antes | Depois | Melhoria |
 |---------|-------|--------|----------|
@@ -43,11 +61,11 @@ Implementar **Right-Sizing** nos recursos do cluster para:
 
 ---
 
-## 🔍 Metodologia Aplicada
+## Como de fato eu fiz (Metodologia)
 
-### 1. Diagnóstico (Discovery)
+### 1. Diagnóstico - Descobrindo onde estava o Problema
 
-Desenvolvi scripts de auditoria automatizados para identificar desperdício:
+Primeiro, precisava de dados. Desenvolvi scripts que fazem uma auditoria automatizada do cluster:
 
 ```bash
 #!/bin/bash
@@ -67,7 +85,7 @@ for ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}'); do
 done
 ```
 
-**Output da Auditoria:**
+O script me retornou esta lista (ordenada do pior para o melhor):
 
 ```
 NAMESPACE                    REQUESTED   USED    SLACK    WASTE %
@@ -78,9 +96,9 @@ kube-system                  3925m       625m    3300m    84.1%  🟡
 longhorn-system              1200m       211m    989m     82.4%  🟡
 ```
 
-### 2. Análise Profunda
+### 2. Análise Profunda - Entendendo o Porquê
 
-Para cada namespace crítico:
+Para cada namespace com alto desperdício, fui a fundo:
 
 **a) Identificação dos workloads:**
 ```bash
@@ -111,15 +129,15 @@ velero-xxx               5m          ← Pediu 500m, usa 5m (99% desperdício)
 - Identificação de picos de uso
 - Cálculo de P95/P99 para definir requests adequados
 
-### 3. Implementação
+### 3. Implementação - Aplicando as mudanças com Segurança
 
-**Estratégia adotada:**
-- ✅ Abordagem gradual (namespace por namespace)
-- ✅ Testes em ambiente de homologação primeiro
-- ✅ Rolling updates (zero downtime)
-- ✅ Margem de segurança: requests = uso_pico × 1.5-2.0
+Minha estratégia foi:
+- Abordagem gradual (um namespace por vez, nunca tudo de uma vez)
+- Testar primeiro no cluster AMP 
+- Rolling updates para garantir zero downtime
+- Manter margem de segurança: requests = uso_pico × 1.5-2.0
 
-**Comandos aplicados (Velero):**
+Os comandos que apliquei no Velero:
 
 ```bash
 # DaemonSet node-agent: 20m → 5m (uso real: ~1m)
@@ -131,9 +149,11 @@ kubectl patch deployment velero -n velero --type='json' \
   -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/resources/requests/cpu", "value": "30m"}]'
 ```
 
-### 4. Validação
+### 4. Validação - Confirmando que Deu Certo
 
-**a) Verificação de rollout:**
+Depois de aplicar as mudanças, fiz uma validação bem detalhada:
+
+**Verificação de rollout:**
 ```bash
 kubectl rollout status deployment/velero -n velero
 # deployment "velero" successfully rolled out ✅
@@ -152,16 +172,16 @@ velero-xxx               30m     ✅ (antes: 500m)
 **c) Monitoramento pós-mudança:**
 - ✅ Pods rodando normalmente
 - ✅ Sem OOMKilled ou CPU throttling
-- ✅ Latência e performance inalteradas
+- ✅ Latência e performance sem alteração
 - ✅ Backups continuam funcionando
 
 ---
 
-## 🛠️ Stack Tecnológica
+## Ferramentas que Usei
 
 - **Kubernetes:** RKE2 (Rancher Kubernetes Engine 2)
 - **Orquestração:** Rancher
-- **Metrics:** metrics-server
+- **Metrics:** rke2-metrics-server
 - **Monitoramento:** Prometheus + Grafana
 - **Backup:** Velero
 - **Service Mesh:** Istio
@@ -170,9 +190,9 @@ velero-xxx               30m     ✅ (antes: 500m)
 
 ---
 
-## 📚 Artefatos Criados
+## O Que Criei (Artefatos)
 
-### 1. Scripts de Auditoria
+### Scripts de Auditoria
 
 - **`check_slack_percent.sh`**: Calcula desperdício por namespace
 - **`diagnostico_metrics_rke2.sh`**: Valida funcionamento do metrics-server
@@ -180,7 +200,7 @@ velero-xxx               30m     ✅ (antes: 500m)
 
 ### 2. Documentação Técnica
 
-- **`otimizacao-kubernetes.md`**: Playbook completo (70+ páginas)
+- **`otimizacao-kubernetes.md`**: Documentação completo com mais de 70 páginas
   - Metodologia de diagnóstico
   - Comandos de correção
   - Casos reais com antes/depois
@@ -196,16 +216,16 @@ velero-xxx               30m     ✅ (antes: 500m)
 
 ---
 
-## 💡 Lições Aprendidas
+## O que aprendi durante o processo
 
-### O que funcionou bem
+### Coisas que funcionaram bem
 
 1. **Abordagem Data-Driven**: Decisões baseadas em métricas reais (Prometheus) e não em "achismos"
 2. **Iteração Gradual**: Começar com namespace menos crítico (velero) reduziu riscos
 3. **Automação**: Scripts reutilizáveis aceleram análise de outros namespaces
 4. **Margem de Segurança**: Manter requests 5-7x maiores que uso real evitou problemas
 
-### Desafios Enfrentados
+### Desafios que enfrentei
 
 1. **Metrics-server RKE2**: Naming diferente (`rke2-metrics-server` vs `metrics-server`)
 2. **Parsing de Dados**: Necessidade de tratar formatos mistos (millicores "m" vs cores inteiros)
@@ -221,35 +241,34 @@ velero-xxx               30m     ✅ (antes: 500m)
 | kube-system | ~2500m | 🔄 Em análise |
 | longhorn-system | ~850m | 🔄 Planejado |
 
-**Economia Total Projetada:** ~6 CPUs (~50% do cluster)
 
 ---
 
-## 🎓 Competências Demonstradas (SRE)
+## Competências que apliquei (SRE)
 
-### Technical Skills
-- ✅ **Observabilidade:** Prometheus, Grafana, metrics-server
-- ✅ **Kubernetes Avançado:** Resource management, scheduling, QoS
-- ✅ **Automação:** Bash scripting, jq, kubectl
-- ✅ **Troubleshooting:** Diagnóstico sistemático de problemas complexos
+### Habilidades Técnicas
+- Observabilidade: Prometheus, Grafana, metrics-server
+- Kubernetes Avançado: Resource management, scheduling, QoS
+- Automação: Bash scripting, jq, kubectl
+- Troubleshooting: Diagnóstico sistemático de problemas complexos
 
-### SRE Practices
-- ✅ **Capacity Planning:** Análise de tendências e projeções
-- ✅ **Cost Optimization:** Redução de desperdício sem impacto em SLA
-- ✅ **Toil Reduction:** Automação de auditorias e correções
-- ✅ **Documentation:** Playbooks, runbooks e conhecimento compartilhado
+### Práticas SRE
+- Capacity Planning: Análise de tendências e projeções
+- Cost Optimization: Redução de desperdício sem impacto em SLA
+- Toil Reduction: Automação de auditorias e correções
+- Documentation: Playbooks, runbooks e conhecimento compartilhado
 
 ### Soft Skills
-- ✅ **Iniciativa:** Identificação proativa de problema não mapeado
-- ✅ **Pensamento Analítico:** Decomposição de problema complexo
-- ✅ **Comunicação Técnica:** Documentação clara e objetiva
-- ✅ **Risk Management:** Abordagem gradual e reversível
+- Iniciativa: Identificação proativa de problema não mapeado
+- Pensamento Analítico: Decomposição de problema complexo
+- Comunicação Técnica: Documentação clara e objetiva
+- Risk Management: Abordagem gradual e reversível
 
 ---
 
-## 📖 Como Reproduzir
+## Como você pode usar esse projeto
 
-### Pré-requisitos
+### O que você precisa
 
 ```bash
 # Ferramentas necessárias
@@ -259,7 +278,7 @@ velero-xxx               30m     ✅ (antes: 500m)
 - metrics-server funcional
 ```
 
-### Passo a Passo
+### Passo a Passo para aplica no seu Cluster
 
 1. **Clone este repositório**
 ```bash
@@ -294,7 +313,7 @@ chmod +x check_slack_percent.sh
 k8s-resource-optimization/
 ├── README.md                          # Este arquivo
 ├── docs/
-│   ├── otimizacao-kubernetes.md      # Playbook completo
+│   ├── otimizacao-kubernetes.md      # Documentação completa
 │   └── caso-velero.md                # Case detalhado
 ├── scripts/
 │   ├── check_slack_percent.sh        # Auditoria principal
@@ -307,40 +326,40 @@ k8s-resource-optimization/
 
 ---
 
-## 🤝 Contribuições
+## Quer Contribuir?
 
-Este projeto é open-source! Contribuições são bem-vindas:
+Este projeto é open-source! Se você quiser ajudar:
 
-- 🐛 Reportar bugs ou problemas
-- 💡 Sugerir melhorias nos scripts
-- 📝 Melhorar documentação
-- ⭐ Dar star se achou útil!
+- Reporte bugs ou problemas que encontrar
+- Sugira melhorias nos scripts
+- Ajude a melhorar a documentação
+- Dê uma star se achou útil!
 
 ---
 
-## 📬 Contato
+## Contato
 
 **Marcelo Loiola**  
-Senior Site Reliability Engineer  
+Software Architect | DevOps Engineer | Cloud Engineer 
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://linkedin.com/in/seu-perfil)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black)](https://github.com/seu-usuario)
-
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-marcelo-loiola-blue)](https://linkedin.com/in/marcelo-loiola)
+[![GitHub](https://img.shields.io/badge/GitHub-marceloloiola-black)](https://github.com/marceloloiola)
 
 ---
 
-## 🏆 Reconhecimentos
+## Licença
 
-Ferramentas e projetos que inspiraram este trabalho:
+Este projeto está sob a licença MIT. Sinta-se livre para usar, modificar e distribuir.
+
+---
+
+## Agradecimentos
+
+Ferramentas e projetos que me inspiraram:
 - [Vertical Pod Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler)
 - [Goldilocks](https://github.com/FairwindsOps/goldilocks)
 - [Kube-resource-report](https://github.com/hjacobs/kube-resource-report)
 
 ---
 
-**⚡ "Otimizar não é sobre cortar recursos, é sobre usar recursos de forma inteligente."**
+**"Otimizar não é sobre cortar recursos, é sobre usar recursos de forma inteligente."**
